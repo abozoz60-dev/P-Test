@@ -1,0 +1,109 @@
+{
+    "scan": {
+        "id": 1,
+        "status": "completed",
+        "operator": "admin",
+        "modules": "net.port_discovery,net.tls,web.security_headers",
+        "started_at": "2026-11-01T06:36:41.380539",
+        "finished_at": "2026-11-01T06:36:41.656165"
+    },
+    "target": {
+        "name": "sample-lab-host",
+        "scope": "127.0.0.1",
+        "authorization_ref": "SELF-OWNED-LAB-2026",
+        "owner_attestation": "I own this test host"
+    },
+    "generated_at": "2026-11-01T06:36:46.446185+00:00",
+    "findings": [
+        {
+            "vuln_id": "PTEST-WEB-HSTS",
+            "asset": "http://127.0.0.1:8080/",
+            "service": "http",
+            "category": "web",
+            "severity": "medium",
+            "confidence": "high",
+            "title": "Missing HSTS (Strict-Transport-Security)",
+            "evidence": "GET http://127.0.0.1:8080/ -> 200; header 'strict-transport-security' absent.",
+            "reproduction": "curl -skI http://127.0.0.1:8080/",
+            "impact": "Browsers may use plaintext HTTP, enabling SSL-strip downgrade.",
+            "remediation": "Send `Strict-Transport-Security: max-age=31536000; includeSubDomains`.",
+            "references": "CWE-319; OWASP Secure Headers Project",
+            "status": "confirmed"
+        },
+        {
+            "vuln_id": "PTEST-WEB-CSP",
+            "asset": "http://127.0.0.1:8080/",
+            "service": "http",
+            "category": "web",
+            "severity": "medium",
+            "confidence": "high",
+            "title": "Missing Content-Security-Policy",
+            "evidence": "GET http://127.0.0.1:8080/ -> 200; header 'content-security-policy' absent.",
+            "reproduction": "curl -skI http://127.0.0.1:8080/",
+            "impact": "No CSP increases XSS blast radius and data-exfiltration risk.",
+            "remediation": "Define a restrictive CSP (default-src 'self'; avoid 'unsafe-inline').",
+            "references": "CWE-1021; OWASP Secure Headers Project",
+            "status": "confirmed"
+        },
+        {
+            "vuln_id": "PTEST-WEB-XCTO",
+            "asset": "http://127.0.0.1:8080/",
+            "service": "http",
+            "category": "web",
+            "severity": "low",
+            "confidence": "high",
+            "title": "Missing X-Content-Type-Options",
+            "evidence": "GET http://127.0.0.1:8080/ -> 200; header 'x-content-type-options' absent.",
+            "reproduction": "curl -skI http://127.0.0.1:8080/",
+            "impact": "MIME sniffing can turn uploads/responses into script execution.",
+            "remediation": "Send `X-Content-Type-Options: nosniff`.",
+            "references": "CWE-16; OWASP Secure Headers Project",
+            "status": "confirmed"
+        },
+        {
+            "vuln_id": "PTEST-WEB-XFO",
+            "asset": "http://127.0.0.1:8080/",
+            "service": "http",
+            "category": "web",
+            "severity": "low",
+            "confidence": "high",
+            "title": "Missing X-Frame-Options / frame-ancestors",
+            "evidence": "GET http://127.0.0.1:8080/ -> 200; header 'x-frame-options' absent.",
+            "reproduction": "curl -skI http://127.0.0.1:8080/",
+            "impact": "Page may be framed for clickjacking.",
+            "remediation": "Send `X-Frame-Options: DENY` or CSP `frame-ancestors 'none'`.",
+            "references": "CWE-1021; OWASP Clickjacking Defense",
+            "status": "confirmed"
+        },
+        {
+            "vuln_id": "PTEST-NET-INV-8080",
+            "asset": "127.0.0.1:8080",
+            "service": "http-alt",
+            "category": "infrastructure",
+            "severity": "informational",
+            "confidence": "high",
+            "title": "Open port 8080/http-alt",
+            "evidence": "TCP connect to 127.0.0.1:8080 succeeded.",
+            "reproduction": "",
+            "impact": "Inventory item for attack-surface review.",
+            "remediation": "Confirm the service is required and intentionally exposed.",
+            "references": "OWASP ASVS V1.14",
+            "status": "confirmed"
+        },
+        {
+            "vuln_id": "PTEST-WEB-BANNER",
+            "asset": "http://127.0.0.1:8080/",
+            "service": "http",
+            "category": "web",
+            "severity": "informational",
+            "confidence": "high",
+            "title": "Server version disclosed in banner",
+            "evidence": "Server: SimpleHTTP/0.6 Python/3.13.18",
+            "reproduction": "",
+            "impact": "Version disclosure aids targeted exploitation of known CVEs.",
+            "remediation": "Suppress or genericise the Server header.",
+            "references": "CWE-200",
+            "status": "confirmed"
+        }
+    ]
+}

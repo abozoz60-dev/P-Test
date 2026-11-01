@@ -1,0 +1,33 @@
+# Development / controlled-deployment compose.
+# The platform database is deliberately separate from any game/production DB.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ptest
+      POSTGRES_PASSWORD: ptest
+      POSTGRES_DB: ptest
+    volumes:
+      - ptest_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ptest"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PTEST_DATABASE_URL: postgresql+psycopg://ptest:ptest@db:5432/ptest
+      PTEST_SECRET_KEY: ${PTEST_SECRET_KEY:-change-me-in-production}
+      PTEST_BOOTSTRAP_ADMIN_USERNAME: ${PTEST_BOOTSTRAP_ADMIN_USERNAME:-admin}
+      PTEST_BOOTSTRAP_ADMIN_PASSWORD: ${PTEST_BOOTSTRAP_ADMIN_PASSWORD:-please-change-me}
+      PTEST_REQUIRE_AUTHORIZATION_RECORD: "true"
+    ports:
+      - "127.0.0.1:8000:8000"   # bind to loopback by default; front with a reverse proxy
+
+volumes:
+  ptest_pgdata:

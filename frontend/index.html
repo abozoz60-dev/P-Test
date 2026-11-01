@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>P-Test — Assessment Platform</title>
+<link rel="stylesheet" href="/app/styles.css" />
+</head>
+<body>
+<div id="login" class="login-wrap">
+  <form id="loginForm" class="card login-card">
+    <h1>P-Test</h1>
+    <p class="muted">Authorized assessment platform</p>
+    <label>Username <input id="username" value="admin" autocomplete="username" /></label>
+    <label>Password <input id="password" type="password" autocomplete="current-password" /></label>
+    <button type="submit">Sign in</button>
+    <p id="loginErr" class="err" hidden></p>
+  </form>
+</div>
+
+<div id="appShell" hidden>
+  <header class="topbar">
+    <div class="brand">P-Test <span class="muted">Assessment Platform</span></div>
+    <div class="topbar-right">
+      <span id="estopBadge" class="badge" hidden>EMERGENCY STOP</span>
+      <span id="whoami" class="muted"></span>
+      <button id="estopBtn" class="btn-ghost danger" title="Toggle emergency stop">Emergency stop</button>
+      <button id="logoutBtn" class="btn-ghost">Logout</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="targets">Targets</button>
+    <button class="tab" data-tab="scans">Scans</button>
+    <button class="tab" data-tab="findings">Findings</button>
+    <button class="tab" data-tab="audit">Audit</button>
+  </nav>
+
+  <main>
+    <!-- Overview -->
+    <section id="tab-overview" class="tabpane">
+      <div class="grid">
+        <div class="card score-card">
+          <div class="score" id="scoreVal">—</div>
+          <div class="muted">Security posture</div>
+          <div class="score-method muted small" id="scoreMethod"></div>
+        </div>
+        <div class="card"><div class="stat" id="statTargets">—</div><div class="muted">Targets</div></div>
+        <div class="card"><div class="stat" id="statScans">—</div><div class="muted">Scans</div></div>
+        <div class="card"><div class="stat" id="statFindings">—</div><div class="muted">Findings</div></div>
+      </div>
+      <div class="card">
+        <h3>Findings by severity</h3>
+        <div id="sevBars" class="sevbars"></div>
+      </div>
+    </section>
+
+    <!-- Targets -->
+    <section id="tab-targets" class="tabpane" hidden>
+      <div class="card">
+        <h3>Register authorized target</h3>
+        <p class="muted small">You must attest ownership or provide an authorization reference. Scope is a
+          comma-separated list of IPs, CIDRs, or hostnames. Scanning is blocked until an admin approves.</p>
+        <form id="targetForm" class="form-row">
+          <input id="tName" placeholder="name (e.g. my-server)" required />
+          <input id="tScope" placeholder="scope (e.g. 203.0.113.10)" required />
+          <input id="tAttest" placeholder="owner attestation" />
+          <input id="tAuthRef" placeholder="authorization ref" />
+          <button type="submit">Register</button>
+        </form>
+        <p id="targetErr" class="err" hidden></p>
+      </div>
+      <div class="card"><table id="targetsTable"><thead><tr>
+        <th>ID</th><th>Name</th><th>Scope</th><th>Approved</th><th>Enabled</th><th>Actions</th>
+      </tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <!-- Scans -->
+    <section id="tab-scans" class="tabpane" hidden>
+      <div class="card">
+        <h3>Launch scan</h3>
+        <form id="scanForm" class="form-row">
+          <select id="scanTarget"></select>
+          <div id="moduleChecks" class="modules"></div>
+          <button type="submit">Start scan</button>
+        </form>
+        <p id="scanErr" class="err" hidden></p>
+      </div>
+      <div class="card"><table id="scansTable"><thead><tr>
+        <th>ID</th><th>Target</th><th>Modules</th><th>Status</th><th>Operator</th><th>Actions</th>
+      </tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <!-- Findings -->
+    <section id="tab-findings" class="tabpane" hidden>
+      <div class="card filters">
+        <select id="fSeverity"><option value="">All severities</option>
+          <option>critical</option><option>high</option><option>medium</option>
+          <option>low</option><option>informational</option></select>
+        <select id="fStatus"><option value="">All statuses</option>
+          <option value="suspected">suspected</option><option value="confirmed">confirmed</option>
+          <option value="false_positive">false_positive</option><option value="fixed">fixed</option></select>
+        <input id="fCategory" placeholder="category filter" />
+        <button id="fApply" class="btn-ghost">Apply</button>
+      </div>
+      <div id="findingsList"></div>
+    </section>
+
+    <!-- Audit -->
+    <section id="tab-audit" class="tabpane" hidden>
+      <div class="card">
+        <h3>Audit log <span id="chainBadge" class="badge ok">chain intact</span></h3>
+        <table id="auditTable"><thead><tr>
+          <th>ID</th><th>Time</th><th>Actor</th><th>Action</th><th>Ref</th><th>Detail</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/app/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<title>P-Test Report — scan 1</title>
+<style>body{font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;color:#1c232d}
+h1{margin-bottom:0} .meta{color:#666;font-size:13px} hr{border:0;border-top:1px solid #e1e4e8;margin:1rem 0}</style></head>
+<body>
+<h1>P-Test Assessment Report</h1>
+<p class="meta">Scan #1 · target <b>sample-lab-host</b> (127.0.0.1) ·
+   operator admin · status completed<br>
+   Authorization: SELF-OWNED-LAB-2026 · Attestation: I own this test host<br>
+   Modules: net.port_discovery,net.tls,web.security_headers · Generated 2026-11-01T06:36:46+00:00</p>
+<hr><p><b>Summary:</b> <span style="color:#d1304a">■</span> critical: 0 <span style="color:#e8590c">■</span> high: 0 <span style="color:#e0a400">■</span> medium: 2 <span style="color:#2f9e44">■</span> low: 2 <span style="color:#539bf5">■</span> informational: 2</p><hr>
+
+      <div style="border-left:4px solid #e0a400;
+                  padding:10px 14px;margin:10px 0;background:#f7f8fa;border-radius:6px">
+        <h3 style="margin:0 0 4px">Missing HSTS (Strict-Transport-Security)
+          <span style="font-size:12px;color:#e0a400">
+            [MEDIUM]</span></h3>
+        <div style="font-size:12px;color:#666;margin-bottom:6px">
+          PTEST-WEB-HSTS · http://127.0.0.1:8080/ · web · confidence high · status confirmed</div>
+        <p><b>Evidence:</b> GET http://127.0.0.1:8080/ -&gt; 200; header &#x27;strict-transport-security&#x27; absent.</p>
+        <p><b>Impact:</b> Browsers may use plaintext HTTP, enabling SSL-strip downgrade.</p>
+        <p><b>Remediation:</b> Send `Strict-Transport-Security: max-age=31536000; includeSubDomains`.</p>
+        <p style="font-size:12px;color:#666"><b>References:</b> CWE-319; OWASP Secure Headers Project</p>
+      </div>
+      <div style="border-left:4px solid #e0a400;
+                  padding:10px 14px;margin:10px 0;background:#f7f8fa;border-radius:6px">
+        <h3 style="margin:0 0 4px">Missing Content-Security-Policy
+          <span style="font-size:12px;color:#e0a400">
+            [MEDIUM]</span></h3>
+        <div style="font-size:12px;color:#666;margin-bottom:6px">
+          PTEST-WEB-CSP · http://127.0.0.1:8080/ · web · confidence high · status confirmed</div>
+        <p><b>Evidence:</b> GET http://127.0.0.1:8080/ -&gt; 200; header &#x27;content-security-policy&#x27; absent.</p>
+        <p><b>Impact:</b> No CSP increases XSS blast radius and data-exfiltration risk.</p>
+        <p><b>Remediation:</b> Define a restrictive CSP (default-src &#x27;self&#x27;; avoid &#x27;unsafe-inline&#x27;).</p>
+        <p style="font-size:12px;color:#666"><b>References:</b> CWE-1021; OWASP Secure Headers Project</p>
+      </div>
+      <div style="border-left:4px solid #2f9e44;
+                  padding:10px 14px;margin:10px 0;background:#f7f8fa;border-radius:6px">
+        <h3 style="margin:0 0 4px">Missing X-Content-Type-Options
+          <span style="font-size:12px;color:#2f9e44">
+            [LOW]</span></h3>
+        <div style="font-size:12px;color:#666;margin-bottom:6px">
+          PTEST-WEB-XCTO · http://127.0.0.1:8080/ · web · confidence high · status confirmed</div>
+        <p><b>Evidence:</b> GET http://127.0.0.1:8080/ -&gt; 200; header &#x27;x-content-type-options&#x27; absent.</p>
+        <p><b>Impact:</b> MIME sniffing can turn uploads/responses into script execution.</p>
+        <p><b>Remediation:</b> Send `X-Content-Type-Options: nosniff`.</p>
+        <p style="font-size:12px;color:#666"><b>References:</b> CWE-16; OWASP Secure Headers Project</p>
+      </div>
+      <div style="border-left:4px solid #2f9e44;
+                  padding:10px 14px;margin:10px 0;background:#f7f8fa;border-radius:6px">
+        <h3 style="margin:0 0 4px">Missing X-Frame-Options / frame-ancestors
+          <span style="font-size:12px;color:#2f9e44">
+            [LOW]</span></h3>
+        <div style="font-size:12px;color:#666;margin-bottom:6px">
+          PTEST-WEB-XFO · http://127.0.0.1:8080/ · web · confidence high · status confirmed</div>
+        <p><b>Evidence:</b> GET http://127.0.0.1:8080/ -&gt; 200; header &#x27;x-frame-options&#x27; absent.</p>
+        <p><b>Impact:</b> Page may be framed for clickjacking.</p>
+        <p><b>Remediation:</b> Send `X-Frame-Options: DENY` or CSP `frame-ancestors &#x27;none&#x27;`.</p>
+        <p style="font-size:12px;color:#666"><b>References:</b> CWE-1021; OWASP Clickjacking Defense</p>
+      </div>
+      <div style="border-left:4px solid #539bf5;
+                  padding:10px 14px;margin:10px 0;background:#f7f8fa;border-radius:6px">
+        <h3 style="margin:0 0 4px">Open port 8080/http-alt
+          <span style="font-size:12px;color:#539bf5">
+            [INFORMATIONAL]</span></h3>
+        <div style="font-size:12px;color:#666;margin-bottom:6px">
+          PTEST-NET-INV-8080 · 127.0.0.1:8080 · infrastructure · confidence high · status confirmed</div>
+        <p><b>Evidence:</b> TCP connect to 127.0.0.1:8080 succeeded.</p>
+        <p><b>Impact:</b> Inventory item for attack-surface review.</p>
+        <p><b>Remediation:</b> Confirm the service is required and intentionally exposed.</p>
+        <p style="font-size:12px;color:#666"><b>References:</b> OWASP ASVS V1.14</p>
+      </div>
+      <div style="border-left:4px solid #539bf5;
+                  padding:10px 14px;margin:10px 0;background:#f7f8fa;border-radius:6px">
+        <h3 style="margin:0 0 4px">Server version disclosed in banner
+          <span style="font-size:12px;color:#539bf5">
+            [INFORMATIONAL]</span></h3>
+        <div style="font-size:12px;color:#666;margin-bottom:6px">
+          PTEST-WEB-BANNER · http://127.0.0.1:8080/ · web · confidence high · status confirmed</div>
+        <p><b>Evidence:</b> Server: SimpleHTTP/0.6 Python/3.13.18</p>
+        <p><b>Impact:</b> Version disclosure aids targeted exploitation of known CVEs.</p>
+        <p><b>Remediation:</b> Suppress or genericise the Server header.</p>
+        <p style="font-size:12px;color:#666"><b>References:</b> CWE-200</p>
+      </div>
+<hr><p class="meta">This report covers only the authorized scope above. All checks were
+non-destructive. To save as PDF, use your browser's Print → Save as PDF.</p>
+</body></html>
